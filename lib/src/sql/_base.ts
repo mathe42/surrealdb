@@ -124,6 +124,7 @@ export function tuple(...fns: ParserFn[]): ParserFn {
       type: 'result',
       rest: currentRest,
       found: sql.slice(0, currentOffset - offset),
+      data: results.map(v=>v.data),
       position: offset,
       sub: results,
       length: currentOffset - offset
