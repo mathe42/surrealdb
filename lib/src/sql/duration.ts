@@ -11,41 +11,39 @@ const unit = alt(
   tag("d"),
   tag("w"),
   tag("y"),
-)
+);
 
-const duration_rawParser = tuple(part, unit)
+const duration_rawParser = tuple(part, unit);
 export const duration_raw: ParserFn = (sql, offset) => {
-  const res = duration_rawParser(sql, offset)
+  const res = duration_rawParser(sql, offset);
 
-  if(res.type === 'error') return res
+  if (res.type === "error") return res;
 
   res.data = {
-    type: 'duration',
+    type: "duration",
     value: {
       value: res.sub![0].data,
-      unit: res.sub![1].found
+      unit: res.sub![1].found,
     },
     position: res.position,
-    length: res.length
-  }
+    length: res.length,
+  };
 
+  return res;
+};
 
-  return res
-}
-
-const durationParser = many(duration_raw)
+const durationParser = many(duration_raw);
 export const duration: ParserFn = (sql, offset) => {
-  const res = durationParser(sql, offset)
+  const res = durationParser(sql, offset);
 
-  if(res.type === 'error') return res
+  if (res.type === "error") return res;
 
   res.data = {
-    type: 'durationSum',
+    type: "durationSum",
     value: res.data,
     position: res.position,
-    length: res.length
-  }
+    length: res.length,
+  };
 
-
-  return res
-}
+  return res;
+};

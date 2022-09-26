@@ -1,6 +1,6 @@
 import { comment } from "./comment.ts";
 import { assigner, operator } from "./operators.ts";
-import { alt, char, peek, space, eof } from "./_base.ts";
+import { alt, char, eof, peek, space } from "./_base.ts";
 
 export const number = peek(
   alt(
@@ -8,16 +8,16 @@ export const number = peek(
     operator,
     assigner,
     comment,
-    char(')'),
-    char(']'),
-    char('}'),
+    char(")"),
+    char("]"),
+    char("}"),
     char('"'),
-    char(';'),
-    char(','),
-    char('..'),
-    eof
-  )
-)
+    char(";"),
+    char(","),
+    char(".."),
+    eof,
+  ),
+);
 
 export const ident = peek(
   alt(
@@ -25,14 +25,14 @@ export const ident = peek(
     operator,
     assigner,
     comment,
-    char(')'),
-    char(']'),
-    char('}'),
-    char(';'),
-    char(','),
-    char('.'),
-    char('['),
-    char('-'),
-    eof
-  )
-)
+    char(")"),
+    char("]"),
+    char("}"),
+    char(";"),
+    char(","),
+    char("."),
+    char("["),
+    char("-"),
+    eof,
+  ),
+);

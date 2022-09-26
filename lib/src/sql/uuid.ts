@@ -1,43 +1,43 @@
 import { alt, char, ParserFn, repeat, takeWhile, tuple } from "./_base.ts";
 
-const hex = takeWhile(chr => /[a-fA-F0-9]/.test(chr))
+const hex = takeWhile((chr) => /[a-fA-F0-9]/.test(chr));
 
 const uuid_raw = tuple(
   repeat(hex, 8),
-  char('-'),
+  char("-"),
   repeat(hex, 4),
-  char('-'),
-  alt(char('1'), char('2'), char('3'), char('4')),
+  char("-"),
+  alt(char("1"), char("2"), char("3"), char("4")),
   repeat(hex, 3),
-  char('-'),
+  char("-"),
   repeat(hex, 4),
-  char('-'),
+  char("-"),
   repeat(hex, 12),
-)
+);
 
 const uuidParser = alt(
   tuple(
     char('"'),
     uuid_raw,
-    char('"')
+    char('"'),
   ),
   tuple(
     char("'"),
     uuid_raw,
-    char("'")
-  )
-)
+    char("'"),
+  ),
+);
 export const uuid: ParserFn = (sql, offset) => {
-  const res = uuidParser(sql, offset)
+  const res = uuidParser(sql, offset);
 
-  if(res.type === 'error') return res
+  if (res.type === "error") return res;
 
   res.data = {
-    type: 'uuid',
+    type: "uuid",
     value: res.sub![1].found,
     position: res.position,
-    length: res.length
-  }
+    length: res.length,
+  };
 
-  return res
-}
+  return res;
+};

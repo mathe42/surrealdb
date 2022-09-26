@@ -1,22 +1,22 @@
 export interface Comment {
-  position: number,
-  length: number
-  content: string
+  position: number;
+  length: number;
+  content: string;
 }
 
 export interface Result {
-  type: 'result';
+  type: "result";
   rest: string;
   found: string;
   position: number;
   length: number;
   sub?: Result[];
   data?: any;
-  comment?: Comment
+  comment?: Comment;
 }
 
 export interface Error {
-  type: 'error';
+  type: "error";
   sub?: Result[];
   error: ErrorX;
 }
@@ -36,21 +36,21 @@ export function tag(tag: string): ParserFn {
 
     if (shouldBeTag == tag) {
       return {
-        type: 'result',
+        type: "result",
         rest: sql.slice(tag.length),
         found: shouldBeTag,
         position: offset,
-        length: tag.length
+        length: tag.length,
       };
     }
 
     return {
-      type: 'error',
+      type: "error",
       error: {
-        type: 'expected keyword',
+        type: "expected keyword",
         position: offset,
-        message: "Expected keyword " + tag
-      }
+        message: "Expected keyword " + tag,
+      },
     };
   };
 }
@@ -63,21 +63,21 @@ export function tag_no_case(tag: string): ParserFn {
 
     if (shouldBeTag.toLowerCase() == tag) {
       return {
-        type: 'result',
+        type: "result",
         rest: sql.slice(tag.length),
         found: shouldBeTag,
         position: offset,
-        length: tag.length
+        length: tag.length,
       };
     }
 
     return {
-      type: 'error',
+      type: "error",
       error: {
-        type: 'expected keyword',
+        type: "expected keyword",
         position: offset,
-        message: "Expected keyword " + tag
-      }
+        message: "Expected keyword " + tag,
+      },
     };
   };
 }
@@ -86,15 +86,16 @@ export function opt(fn: ParserFn): ParserFn {
   return (sql: string, offset: number) => {
     const res = fn(sql, offset);
 
-    if (res.type === 'result')
+    if (res.type === "result") {
       return res;
+    }
 
     return {
-      type: 'result',
+      type: "result",
       rest: sql,
-      found: '',
+      found: "",
       position: offset,
-      length: 0
+      length: 0,
     };
   };
 }
@@ -108,10 +109,10 @@ export function tuple(...fns: ParserFn[]): ParserFn {
 
     for (let i = 0; i < fns.length; i++) {
       const res = fns[i](currentRest, currentOffset);
-      if (res.type === 'error') {
+      if (res.type === "error") {
         return {
           ...res,
-          sub: results
+          sub: results,
         };
       }
       currentRest = res.rest;
@@ -121,13 +122,13 @@ export function tuple(...fns: ParserFn[]): ParserFn {
     }
 
     return {
-      type: 'result',
+      type: "result",
       rest: currentRest,
       found: sql.slice(0, currentOffset - offset),
-      data: results.map(v=>v.data),
+      data: results.map((v) => v.data),
       position: offset,
       sub: results,
-      length: currentOffset - offset
+      length: currentOffset - offset,
     };
   };
 }
@@ -139,29 +140,29 @@ export function alt(...fns: ParserFn[]): ParserFn {
     for (let i = 0; i < fns.length; i++) {
       const res = fns[i](sql, offset);
 
-      if (res.type === 'result')
+      if (res.type === "result") {
         return res;
+      }
 
       err.push(res.error);
-
     }
 
     return {
-      type: 'error',
+      type: "error",
       error: {
         sub: err,
-        type: 'no variant match',
-        message: 'No match found',
-        position: offset
-      }
+        type: "no variant match",
+        message: "No match found",
+        position: offset,
+      },
     };
   };
 }
 const spaces = [
-  ' ',
-  '\n',
-  '\t',
-  '\r'
+  " ",
+  "\n",
+  "\t",
+  "\r",
 ];
 export function space(allow0 = false): ParserFn {
   return (sql: string, offset: number) => {
@@ -169,31 +170,31 @@ export function space(allow0 = false): ParserFn {
       if (!spaces.includes(sql[i])) {
         if ((i > 0 && !allow0) || (i >= 0 && allow0)) {
           return {
-            type: 'result',
+            type: "result",
             rest: sql.slice(i),
             found: sql.slice(0, i),
             position: offset,
-            length: i
+            length: i,
           };
         } else {
           return {
-            type: 'error',
+            type: "error",
             error: {
-              type: 'expected space',
+              type: "expected space",
               position: offset,
-              message: 'Expected space'
-            }
+              message: "Expected space",
+            },
           };
         }
       }
     }
 
     return {
-      type: 'result',
-      rest: '',
+      type: "result",
+      rest: "",
       found: sql,
       position: offset,
-      length: sql.length
+      length: sql.length,
     };
   };
 }
@@ -207,26 +208,25 @@ export function many(fn: ParserFn, allow0 = false): ParserFn {
     while (true) {
       const res = fn(currentRest, currentOffset);
 
-      if (res.type === 'error') {
+      if (res.type === "error") {
         if (results.length === 0 && !allow0) {
           return res;
         }
 
         return {
-          type: 'result',
+          type: "result",
           rest: currentRest,
           position: offset,
           length: currentOffset - offset,
           sub: results,
           found: sql.slice(0, currentOffset - offset),
-          data: results.map(v=>v.data)
+          data: results.map((v) => v.data),
         };
       }
 
       results.push(res);
       currentRest = res.rest;
       currentOffset += res.length;
-
     }
   };
 }
@@ -235,28 +235,28 @@ export function char(char: string): ParserFn {
   return (sql: string, offset) => {
     if (sql[0] === char) {
       return {
-        type: 'result',
+        type: "result",
         length: 1,
         found: char,
         position: offset,
-        rest: sql.slice(1)
+        rest: sql.slice(1),
       };
     }
 
     return {
-      type: 'error',
+      type: "error",
       error: {
         message: `char ${char} not found`,
         position: offset,
-        type: 'char not found'
-      }
+        type: "char not found",
+      },
     };
   };
 }
 
 export function takeUntil(tag: string): ParserFn {
   return (sql: string, offset: number) => {
-    let pre = '';
+    let pre = "";
     let rest = sql;
 
     while (rest.length > 0 && !rest.startsWith(tag)) {
@@ -266,35 +266,34 @@ export function takeUntil(tag: string): ParserFn {
 
     if (rest.length === 0) {
       return {
-        type: 'error',
+        type: "error",
         error: {
-          message: tag + ' not found',
-          type: 'tag not found',
-          position: offset
-        }
+          message: tag + " not found",
+          type: "tag not found",
+          position: offset,
+        },
       };
     }
 
     return {
-      type: 'result',
+      type: "result",
       length: pre.length,
       position: offset,
       found: pre,
-      rest
+      rest,
     };
   };
 }
 
 export function takeUntilEsc(escTag: string, tag: string): ParserFn {
   return (sql: string, offset: number) => {
-    let pre = '';
+    let pre = "";
     let rest = sql;
 
     while (rest.length > 0 && !rest.startsWith(tag)) {
-      if(rest.startsWith(escTag)) {
-        pre += escTag,
-        rest = rest.slice(escTag.length)
-      }else {
+      if (rest.startsWith(escTag)) {
+        pre += escTag, rest = rest.slice(escTag.length);
+      } else {
         pre += rest[0];
         rest = rest.slice(1);
       }
@@ -302,194 +301,197 @@ export function takeUntilEsc(escTag: string, tag: string): ParserFn {
 
     if (rest.length === 0) {
       return {
-        type: 'error',
+        type: "error",
         error: {
-          message: tag + ' not found',
-          type: 'tag not found',
-          position: offset
-        }
+          message: tag + " not found",
+          type: "tag not found",
+          position: offset,
+        },
       };
     }
 
     return {
-      type: 'result',
+      type: "result",
       length: pre.length,
       position: offset,
       found: pre,
-      rest
+      rest,
     };
   };
 }
 
 export const takeUntilLE: ParserFn = (sql: string, offset: number) => {
-  let pre = '';
+  let pre = "";
   let rest = sql;
 
-  while (rest.length > 0 && !rest.startsWith('\n') && !rest.startsWith('\r')) {
+  while (rest.length > 0 && !rest.startsWith("\n") && !rest.startsWith("\r")) {
     pre += rest[0];
     rest = rest.slice(1);
   }
 
-  while (rest.length > 0 && (rest.startsWith('\n') || rest.startsWith('\r'))) {
+  while (rest.length > 0 && (rest.startsWith("\n") || rest.startsWith("\r"))) {
     pre += rest[0];
     rest = rest.slice(1);
   }
 
   return {
-    type: 'result',
+    type: "result",
     length: pre.length,
     position: offset,
     found: pre,
-    rest
+    rest,
   };
 };
 
-
-export function takeWhile(cond: (char: string) => boolean): ParserFn  {
+export function takeWhile(cond: (char: string) => boolean): ParserFn {
   return (sql, offset) => {
-    let pre = ''
-    let rest = sql
+    let pre = "";
+    let rest = sql;
 
-    while(cond(rest[0])) {
+    while (cond(rest[0])) {
       pre += rest[0];
       rest = rest.slice(1);
     }
 
     return {
-      type: 'result',
+      type: "result",
       rest,
       position: offset,
       found: pre,
-      length: pre.length
-    }
-  }
+      length: pre.length,
+    };
+  };
 }
 
-export const take_usize: ParserFn  = (sql, offset) => {
-  const res = takeWhile(ch => /\d/.test(ch))(sql, offset) as Result
-  
-  if(res.found.length === 0) {
+export const take_usize: ParserFn = (sql, offset) => {
+  const res = takeWhile((ch) => /\d/.test(ch))(sql, offset) as Result;
+
+  if (res.found.length === 0) {
     return {
-      type: 'error',
+      type: "error",
       error: {
-        type: 'no digit found',
-        message: 'Digit [0-9] expected',
-        position: offset
-      }
-    }
+        type: "no digit found",
+        message: "Digit [0-9] expected",
+        position: offset,
+      },
+    };
   }
 
   res.data = {
-    type: 'int',
-    value: Number.parseInt(res.found)
-  }
+    type: "int",
+    value: Number.parseInt(res.found),
+  };
 
-  return res
-}
-export const take_u64 = take_usize
+  return res;
+};
+export const take_u64 = take_usize;
 
 export function getComments(res: Result): Comment[] {
-  const comments: Comment[] = []
+  const comments: Comment[] = [];
 
-  if(res.comment) {
-    comments.push(res.comment)
+  if (res.comment) {
+    comments.push(res.comment);
   }
 
-  if(res.sub) {
-    comments.push(...res.sub.flatMap(res => getComments(res)))
+  if (res.sub) {
+    comments.push(...res.sub.flatMap((res) => getComments(res)));
   }
-  
-  return comments
+
+  return comments;
 }
 
-export function seperatedList(seperator: ParserFn, item: ParserFn, allow0 = true): ParserFn {
+export function seperatedList(
+  seperator: ParserFn,
+  item: ParserFn,
+  allow0 = true,
+): ParserFn {
   const baseParser = tuple(
     item,
-    many(tuple(seperator, item), true)
-  )
-  const parser = allow0 ? opt(baseParser) : baseParser
+    many(tuple(seperator, item), true),
+  );
+  const parser = allow0 ? opt(baseParser) : baseParser;
 
   return (sql, offset) => {
-    const res = parser(sql, offset)
+    const res = parser(sql, offset);
 
-    if(res.type === 'error') return res
+    if (res.type === "error") return res;
 
-    if(res.length === 0) {
+    if (res.length === 0) {
       res.data = {
-        type: 'array',
-        values: []
-      }  
+        type: "array",
+        values: [],
+      };
     } else {
-      const firstItem = res.sub![0].data
-      const restItems = res.sub![1].sub!.map(tup=>tup.sub![1].data)
+      const firstItem = res.sub![0].data;
+      const restItems = res.sub![1].sub!.map((tup) => tup.sub![1].data);
 
       res.data = {
-        type: 'list',
+        type: "list",
         values: [
           firstItem,
-          ...restItems
-        ]
-      }
+          ...restItems,
+        ],
+      };
     }
 
-    return res
-  }
+    return res;
+  };
 }
 
 export function repeat(fn: ParserFn, count: number) {
-  return tuple(...'x'.repeat(count - 1).split('x').map(()=>fn))
+  return tuple(..."x".repeat(count - 1).split("x").map(() => fn));
 }
 
 export function map(fn: ParserFn, data: any): ParserFn {
   return (sql, offset) => {
-    const res = fn(sql, offset)
+    const res = fn(sql, offset);
 
-    if(res.type === 'error') return res
+    if (res.type === "error") return res;
 
     res.data = {
       position: res.position,
       length: res.length,
-      ...data
-    }
+      ...data,
+    };
 
-    return res
-  }
+    return res;
+  };
 }
 
 export function peek(fn: ParserFn): ParserFn {
   return (sql, offset) => {
-    const res = fn(sql, offset)
+    const res = fn(sql, offset);
 
-    if(res.type === 'error') return res
+    if (res.type === "error") return res;
 
     return {
-      type: 'result',
+      type: "result",
       sub: [res],
       position: offset,
       length: 0,
-      found: '',
-      rest: sql
-    }
-  }
+      found: "",
+      rest: sql,
+    };
+  };
 }
 
 export const eof: ParserFn = (sql, offset) => {
-  if(sql.length === 0) {
+  if (sql.length === 0) {
     return {
-      type: 'result',
+      type: "result",
       position: offset,
       length: 0,
-      found: '',
-      rest: ''
-    }
+      found: "",
+      rest: "",
+    };
   }
 
   return {
-    type: 'error',
+    type: "error",
     error: {
-      message: 'expected end of input found ' + sql.slice(7),
-      type: 'expected eof',
-      position: offset
-    }
-  }
-}
+      message: "expected end of input found " + sql.slice(7),
+      type: "expected eof",
+      position: offset,
+    },
+  };
+};

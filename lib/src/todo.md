@@ -1,33 +1,37 @@
 # .
-* view
-* version
-* subquery
-* strand
-* statement
-* query
-* permission
-* parser
-* order
-* kind
-* group
-* graph
-* geometry
-* functions
-* datetime
-* data
+
+- view
+- version
+- subquery
+- strand
+- statement
+- query
+- permission
+- parser
+- order
+- kind
+- group
+- graph
+- geometry
+- functions
+- datetime
+- data
+
 # ./statement
-* create
-* define
-* delete
-* ifelse
-* info
-* insert
-* live
-* mod
-* option
-* relate
-* remove
-* select
+
+- create
+- define
+- delete
+- ifelse
+- info
+- insert
+- live
+- mod
+- option
+- relate
+- remove
+- select
 
 # ./value
-* value
+
+- value

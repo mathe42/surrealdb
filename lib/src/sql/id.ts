@@ -9,17 +9,17 @@ export const id: ParserFn = (sql, offset) => {
     integer,
     ident_raw,
     object,
-    array
-  )(sql, offset)
+    array,
+  )(sql, offset);
 
-  if(res.type === 'error') return res
+  if (res.type === "error") return res;
 
   res.data = {
-    type: 'id',
+    type: "id",
     value: res.data,
     position: res.position,
     length: res.length,
-  }
+  };
 
-  return res
-}
+  return res;
+};

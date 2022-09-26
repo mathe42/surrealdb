@@ -1,44 +1,44 @@
 import { id } from "./id.ts";
 import { ident_raw } from "./ident.ts";
-import { char, ParserFn, tuple, alt } from "./_base.ts";
+import { alt, char, ParserFn, tuple } from "./_base.ts";
 
 const thing_normal: ParserFn = (sql, offset) => {
-  const res = tuple(ident_raw, char(':'), id)(sql, offset)
+  const res = tuple(ident_raw, char(":"), id)(sql, offset);
 
-  if(res.type === 'error') return res
+  if (res.type === "error") return res;
 
   res.data = {
-    type: 'thing',
+    type: "thing",
     value: {
       table: res.sub![0].data,
       id: res.sub![2].data,
     },
     position: res.position,
-    length: res.length
-  }
+    length: res.length,
+  };
 
-  return res
-}
+  return res;
+};
 
 const thing_single: ParserFn = (sql, offset) => {
-  const res = tuple(char("'"), thing_normal, char("'"))(sql, offset)
+  const res = tuple(char("'"), thing_normal, char("'"))(sql, offset);
 
-  if(res.type === 'error') return res
+  if (res.type === "error") return res;
 
-  res.data = res.sub![1]
+  res.data = res.sub![1];
 
-  return res 
-}
+  return res;
+};
 
 const thing_double: ParserFn = (sql, offset) => {
-  const res = tuple(char('"'), thing_normal, char('"'))(sql, offset)
+  const res = tuple(char('"'), thing_normal, char('"'))(sql, offset);
 
-  if(res.type === 'error') return res
+  if (res.type === "error") return res;
 
-  res.data = res.sub![1]
+  res.data = res.sub![1];
 
-  return res 
-}
+  return res;
+};
 
-const thing_raw = alt(thing_double, thing_single, thing_normal)
-export const thing = thing_raw
+const thing_raw = alt(thing_double, thing_single, thing_normal);
+export const thing = thing_raw;

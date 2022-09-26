@@ -3,31 +3,31 @@ import { ParserFn, seperatedList } from "./_base.ts";
 import { commas } from "./common.ts";
 
 export const table: ParserFn = (sql, offset) => {
-  const res = ident(sql, offset)
-  
-  if(res.type === 'error') return res
+  const res = ident(sql, offset);
+
+  if (res.type === "error") return res;
 
   res.data = {
-    type: 'table',
+    type: "table",
     value: res.data,
     position: res.position,
-    length: res.length
-  }
+    length: res.length,
+  };
 
-  return res
-}
+  return res;
+};
 
 export const tables: ParserFn = (sql, offset) => {
-  const res = seperatedList(commas,table,false)(sql, offset)
+  const res = seperatedList(commas, table, false)(sql, offset);
 
-  if(res.type === 'error') return res
+  if (res.type === "error") return res;
 
   res.data = {
-    type: 'tables',
+    type: "tables",
     position: res.position,
     length: res.length,
-    value: res.data
-  }
+    value: res.data,
+  };
 
-  return res
-}
+  return res;
+};

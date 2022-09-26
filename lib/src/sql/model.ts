@@ -2,55 +2,55 @@ import { ident_raw } from "./ident.ts";
 import { char, ParserFn, take_u64, tuple } from "./_base.ts";
 
 const model_countParser = tuple(
-  char('|'),
+  char("|"),
   ident_raw,
-  char(':'),
+  char(":"),
   take_u64,
-  char('|')
-)
+  char("|"),
+);
 
 export const model_count: ParserFn = (sql, offset) => {
-  const res = model_countParser(sql, offset)
+  const res = model_countParser(sql, offset);
 
-  if(res.type === 'error') return res
+  if (res.type === "error") return res;
 
   res.data = {
-    type: 'model',
+    type: "model",
     value: {
-      type: 'count',
+      type: "count",
       table: res.sub![1].data,
-      value: res.sub![3].data
-    }
-  }
+      value: res.sub![3].data,
+    },
+  };
 
-  return res
-}
+  return res;
+};
 
 const modal_rangeParser = tuple(
-  char('|'),
+  char("|"),
   ident_raw,
-  char(':'),
+  char(":"),
   take_u64,
-  char('.'),
-  char('.'),
+  char("."),
+  char("."),
   take_u64,
-  char('|') 
-)
+  char("|"),
+);
 
 export const model_range: ParserFn = (sql, offset) => {
-  const res = modal_rangeParser(sql, offset)
+  const res = modal_rangeParser(sql, offset);
 
-  if(res.type === 'error') return res
+  if (res.type === "error") return res;
 
   res.data = {
-    type: 'model',
+    type: "model",
     value: {
-      type: 'range',
+      type: "range",
       table: res.sub![1].data,
       begin: res.sub![3].data,
-      end: res.sub![6].data
-    }
-  }
+      end: res.sub![6].data,
+    },
+  };
 
-  return res
-}
+  return res;
+};

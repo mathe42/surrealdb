@@ -3,24 +3,24 @@ import { value } from "./value/value.ts";
 import { char, opt, ParserFn, seperatedList, tuple } from "./_base.ts";
 
 const arrayParser = tuple(
-  char('['),
+  char("["),
   mightbespace,
-  seperatedList(char(','), value),
-  opt(char(',')),
+  seperatedList(char(","), value),
+  opt(char(",")),
   mightbespace,
-  char(']')
-)
-export const array:ParserFn = (sql, offset) => {
-  const res = arrayParser(sql, offset)
+  char("]"),
+);
+export const array: ParserFn = (sql, offset) => {
+  const res = arrayParser(sql, offset);
 
-  if(res.type === 'error') return res
+  if (res.type === "error") return res;
 
   res.data = {
-    type: 'array',
+    type: "array",
     value: res.sub![3].data,
     position: res.position,
-    length: res.length
-  }
+    length: res.length,
+  };
 
-  return res
-}
+  return res;
+};

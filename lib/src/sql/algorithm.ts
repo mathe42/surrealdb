@@ -14,19 +14,19 @@ const algorithmParser = alt(
   tag("RS256"),
   tag("RS384"),
   tag("RS512"),
-)
+);
 
 export const algorithm: ParserFn = (sql, offset) => {
-  const res = algorithmParser(sql, offset)
+  const res = algorithmParser(sql, offset);
 
-  if(res.type === 'error') return res
+  if (res.type === "error") return res;
 
   res.data = {
-    type: 'algorithm',
+    type: "algorithm",
     value: res.found,
     position: res.position,
-    length: res.length
-  }
+    length: res.length,
+  };
 
-  return res
-}
+  return res;
+};
