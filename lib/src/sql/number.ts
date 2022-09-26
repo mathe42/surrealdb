@@ -1,8 +1,13 @@
-import { alt, char, opt, ParserFn, take_u64, tuple } from "./_base.ts";
+import {
+  alt,
+  char,
+  opt,
+  ParserFn,
+  recognize_float,
+  take_u64,
+  tuple,
+} from "./_base.ts";
 import { number as ending } from "./ending.ts";
-
-// TODO implement
-const recognize_float: ParserFn = (() => {}) as any;
 
 export const integer: ParserFn = (sql, offset) => {
   const res = tuple(opt(char("-")), take_u64, ending)(sql, offset);

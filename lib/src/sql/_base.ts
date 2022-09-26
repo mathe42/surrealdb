@@ -535,3 +535,26 @@ export const eof: ParserFn = (sql, offset) => {
     },
   };
 };
+
+export function getDataIndex(fn: ParserFn, index: number): ParserFn {
+  return (sql, offset) => {
+    const res = fn(sql, offset);
+
+    if (res.type === "error") return res;
+
+    res.data = res.data[index];
+
+    return res;
+  };
+}
+
+// TODO implement
+export const recognize_float: ParserFn = (() => {}) as any;
+
+export const double = recognize_float;
+
+export const resolve = (fn: () => ParserFn): ParserFn => {
+  return (sql, offset) => {
+    return fn()(sql, offset);
+  };
+};
