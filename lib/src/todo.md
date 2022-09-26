@@ -13,7 +13,6 @@
 - group
 - graph
 - geometry
-- functions
 - datetime
 - data
 
