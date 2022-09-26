@@ -4,7 +4,6 @@
 - strand (string escaping?)
 - permission 
 - parser (is last thing)
-- data
 
 # ./statement
 

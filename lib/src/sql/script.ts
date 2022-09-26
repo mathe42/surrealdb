@@ -29,7 +29,7 @@ const charAny: ParserFn = (sql, offset) => {
         type: "JS-Error",
         message: "unexpected object boundary at " + offset,
         position: offset,
-      },
+      }
     };
   }
 
