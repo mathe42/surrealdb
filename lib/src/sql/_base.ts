@@ -254,6 +254,27 @@ export function char(char: string): ParserFn {
   };
 }
 
+export const digit: ParserFn = (sql, offset) => {
+  if (/\d/.test(sql[0])) {
+    return {
+      type: "result",
+      length: 1,
+      found: sql[0],
+      position: offset,
+      rest: sql.slice(1),
+    };
+  }
+
+  return {
+    type: "error",
+    error: {
+      message: `digit not found`,
+      position: offset,
+      type: "digit not found",
+    },
+  };
+};
+
 export function takeUntil(tag: string): ParserFn {
   return (sql: string, offset: number) => {
     let pre = "";
@@ -433,6 +454,25 @@ export function seperatedList(
         ],
       };
     }
+
+    return res;
+  };
+}
+
+export function take_digits_range(count: number): ParserFn {
+  const parser = repeat(digit, count);
+
+  return (sql, offset) => {
+    const res = parser(sql, offset);
+
+    if (res.type === "error") return res;
+
+    res.data = {
+      position: res.position,
+      length: res.length,
+      type: "number",
+      value: parseInt(res.found),
+    };
 
     return res;
   };

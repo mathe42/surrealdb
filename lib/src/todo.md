@@ -1,7 +1,5 @@
 # .
 
-- view
-- version
 - subquery
 - strand
 - statement
@@ -12,7 +10,6 @@
 - kind
 - graph
 - geometry
-- datetime
 - data
 
 # ./statement
@@ -23,9 +20,6 @@
 - ifelse
 - info
 - insert
-- live
-- mod
-- option
 - relate
 - remove
 - select

@@ -13,12 +13,11 @@ export const base = alt(
   }),
 );
 
-
 const scopeParser = tuple(
-  tag_no_case('SCOPE'),
+  tag_no_case("SCOPE"),
   shouldbespace,
-  ident
-)
+  ident,
+);
 export const scope: ParserFn = (sql, offset) => {
   const res = scopeParser(sql, offset);
 
@@ -35,8 +34,7 @@ export const scope: ParserFn = (sql, offset) => {
   return res;
 };
 
-
 export const base_or_scope = alt(
   base,
-  scope
-)
+  scope,
+);
