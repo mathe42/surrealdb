@@ -10,7 +10,6 @@
 - parser
 - order
 - kind
-- group
 - graph
 - geometry
 - datetime
