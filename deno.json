@@ -1,0 +1,9 @@
+{
+  "fmt": {
+    "files": {
+      "include": [
+        "lib/src/sql"
+      ]
+    }
+  }
+}
